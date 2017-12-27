@@ -1,4 +1,4 @@
-import { ProblemOptions, Algorithm, InputFunction, NumberMap } from "./models";
+import { ProblemOptions, Algorithm, InputFunction, NumberMap, AlgorithmResults } from "./models";
 
 export class AlgorithmComparer {
 
@@ -7,12 +7,7 @@ export class AlgorithmComparer {
     private metrics: string[];
     private inputs: any[] | InputFunction<any>;
 
-    private results: {
-        [key: string]: {
-            index: number;
-            metrics: NumberMap
-        }[]
-    } = {};
+    private results: AlgorithmResults = {};
 
     constructor(private options: ProblemOptions) {
         this.problemName = options.name;
@@ -45,7 +40,12 @@ export class AlgorithmComparer {
         }
 
         this.algorithms.push(algorithm);
-        this.results[algorithm.name] = [];
+        this.results[algorithm.name] = {
+            runDetails: [],
+            totals: {
+                timeSpent: 0
+            }
+        };
     }
 
     getInput(index: number) {
@@ -71,7 +71,7 @@ export class AlgorithmComparer {
                 algorithm.run(input);
                 const metrics: NumberMap = {};
                 this.metrics.forEach(metric => metrics[metric] = algorithm.metrics[metric]());
-                this.results[algorithm.name].push({ index, metrics });
+                this.results[algorithm.name].runDetails.push({ index, metrics });
             });
         }
     }
@@ -79,7 +79,8 @@ export class AlgorithmComparer {
     displayResults() {
         Object.keys(this.results).forEach(algorithm => {
             console.log(algorithm);
-            console.log(this.results[algorithm]);
+            console.log(this.results[algorithm].totals);
+            console.log(this.results[algorithm].runDetails);
         });
     }
 }

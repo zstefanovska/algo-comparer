@@ -1,13 +1,17 @@
 {
   "name": "algo-comparer",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "Algorithm Complexity Comparer for Advanced Algorithms",
   "main": "dist/index.js",
   "scripts": {
-    "exec": "tsc & node ./dist/index.js"
+    "example": "tsc & node ./dist/run-example.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zstefanovska/algo-comparer.git"
   },
   "author": "Zorica Stefanovska",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "moment": "^2.20.1"
   },

@@ -20,3 +20,20 @@ export interface Algorithm {
     reset(): void;
 }
 
+export type RunDetail = {
+    index: number;
+    metrics: NumberMap
+};
+
+export type RunDetails = RunDetail[];
+
+export interface TotalMetrics {
+    timeSpent: number;
+}
+
+export interface AlgorithmResult {
+    totals: TotalMetrics;
+    runDetails: RunDetails;
+}
+
+export type AlgorithmResults = { [key: string]: AlgorithmResult };
