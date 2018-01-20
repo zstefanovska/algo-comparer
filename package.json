@@ -1,6 +1,6 @@
 {
   "name": "algo-comparer",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "Algorithm Complexity Comparer for Advanced Algorithms",
   "main": "dist/index.js",
   "scripts": {
@@ -13,7 +13,8 @@
   "author": "Zorica Stefanovska",
   "license": "MIT",
   "dependencies": {
-    "moment": "^2.20.1"
+    "moment": "^2.20.1",
+    "performance-node": "^0.2.0"
   },
   "devDependencies": {
     "tslint": "^5.8.0",

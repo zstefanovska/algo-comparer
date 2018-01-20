@@ -2,6 +2,10 @@ export type NumberMap = { [key: string]: number };
 
 export type Metric = () => number;
 export type MetricMap = { [key: string]: Metric };
+export type MetricValuesMap = {
+    runTime: number,
+    [key: string]: number
+};
 
 export type InputFunction<T> = (index: number) => T;
 
@@ -22,7 +26,7 @@ export interface Algorithm {
 
 export type RunDetail = {
     index: number;
-    metrics: NumberMap
+    metrics: MetricValuesMap
 };
 
 export type RunDetails = RunDetail[];

@@ -1,4 +1,5 @@
-import { ProblemOptions, Algorithm, InputFunction, NumberMap, AlgorithmResults } from "./models";
+import { ProblemOptions, Algorithm, InputFunction, AlgorithmResults, MetricValuesMap } from "./models";
+import * as Performance from "performance-node";
 
 export class AlgorithmComparer {
 
@@ -64,14 +65,23 @@ export class AlgorithmComparer {
     }
 
     runAlgorithms() {
+        const performance = new Performance();
         const inputLength = this.getInputLength();
         for (let index = 0; index < inputLength; index++) {
             const input = this.getInput(index);
             this.algorithms.forEach(algorithm => {
                 algorithm.run(input);
-                const metrics: NumberMap = {};
+                algorithm.reset();
+                const startTime = performance.now();
+                algorithm.run(input);
+                const endTime = performance.now();
+                const metrics: MetricValuesMap = {
+                    runTime: ((endTime - startTime) * 1000) | 0
+                };
                 this.metrics.forEach(metric => metrics[metric] = algorithm.metrics[metric]());
                 this.results[algorithm.name].runDetails.push({ index, metrics });
+                this.results[algorithm.name].totals.timeSpent += metrics.runTime;
+                algorithm.reset();
             });
         }
     }
