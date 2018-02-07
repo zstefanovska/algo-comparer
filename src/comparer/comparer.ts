@@ -1,5 +1,6 @@
 import { ProblemOptions, Algorithm, InputFunction, AlgorithmResults, MetricValuesMap } from "./models";
 import * as Performance from "performance-node";
+import { Analyzer } from "./analyzer";
 
 export class AlgorithmComparer {
 
@@ -8,7 +9,7 @@ export class AlgorithmComparer {
     private metrics: string[];
     private inputs: any[] | InputFunction<any>;
 
-    private results: AlgorithmResults = {};
+    public results: AlgorithmResults = {};
 
     constructor(private options: ProblemOptions) {
         this.problemName = options.name;
@@ -76,7 +77,7 @@ export class AlgorithmComparer {
                 algorithm.run(input);
                 const endTime = performance.now();
                 const metrics: MetricValuesMap = {
-                    runTime: ((endTime - startTime) * 1000) | 0
+                    runTime: ((endTime - startTime) / 1000) | 0
                 };
                 this.metrics.forEach(metric => metrics[metric] = algorithm.metrics[metric]());
                 this.results[algorithm.name].runDetails.push({ index, metrics });
@@ -93,4 +94,23 @@ export class AlgorithmComparer {
             console.log(this.results[algorithm].runDetails);
         });
     }
+
+    displayAnalysis(): any {
+        const analyzer = new Analyzer();
+        Object.keys(this.results).forEach(algorithm => {
+            console.log(`Algoritm Name: ${algorithm}`);
+            const result = this.results[algorithm];
+            console.log(`  Total run time: ${(result.totals.timeSpent / 1000).toPrecision(3)}s`);
+            const metricValues = this.metrics.map(metricName => ({
+                name: metricName,
+                values: result.runDetails.map(run => run.metrics[metricName])
+            }));
+
+            metricValues.forEach(metric => {
+                const complexity = analyzer.analyzeMetrics(metric.values);
+                console.log(`  Metric: ${metric.name}, Estimated complexity: ${complexity}`);
+            });
+        });
+    }
+
 }

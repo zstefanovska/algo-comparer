@@ -16,7 +16,9 @@ function run() {
 
     comparer.runAlgorithms();
 
-    comparer.displayResults();
+    // comparer.displayResults();
+
+    comparer.displayAnalysis();
 }
 
 run();
