@@ -1,5 +1,5 @@
-import { BruteForce } from "./fibbonaci/fib-brute";
-import { Dynamic } from "./fibbonaci/fib-dynamic";
+import { BruteForceFibbonaci } from "./fibbonaci/fib-brute";
+import { DynamicFibbonaci } from "./fibbonaci/fib-dynamic";
 import { ProblemOptions, AlgorithmComparer } from "./comparer";
 
 function run() {
@@ -11,12 +11,12 @@ function run() {
     };
 
     const comparer = new AlgorithmComparer(options);
-    comparer.registerAlgorithm(new BruteForce());
-    comparer.registerAlgorithm(new Dynamic());
+    comparer.registerAlgorithm(new BruteForceFibbonaci());
+    comparer.registerAlgorithm(new DynamicFibbonaci());
 
     comparer.runAlgorithms();
 
-    // comparer.displayResults();
+    comparer.displayResults();
 
     comparer.displayAnalysis();
 }

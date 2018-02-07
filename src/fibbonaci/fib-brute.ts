@@ -1,7 +1,7 @@
 import { Algorithm } from "comparer";
 
 
-export class BruteForce implements Algorithm {
+export class BruteForceFibbonaci implements Algorithm {
 
     private callCount: number = 0;
 

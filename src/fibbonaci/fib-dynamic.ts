@@ -1,6 +1,6 @@
 import { NumberMap } from "comparer";
 
-export class Dynamic {
+export class DynamicFibbonaci {
 
     private callCount: number = 0;
     private cache: NumberMap = {

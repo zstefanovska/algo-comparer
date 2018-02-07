@@ -77,7 +77,7 @@ export class AlgorithmComparer {
                 algorithm.run(input);
                 const endTime = performance.now();
                 const metrics: MetricValuesMap = {
-                    runTime: ((endTime - startTime) / 1000) | 0
+                    runTime: (endTime - startTime) | 0
                 };
                 this.metrics.forEach(metric => metrics[metric] = algorithm.metrics[metric]());
                 this.results[algorithm.name].runDetails.push({ index, metrics });
