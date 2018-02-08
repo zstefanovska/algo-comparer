@@ -13,13 +13,13 @@
 Овие операции се дефинирани како метрики на самиот проблем, и секој алгоритам за решавање на проблемот, е потребно да ги пресмета и достави вредностите на овие метрики за анализа.  
 При извршувањето на алгоритмите, тие се извршуваат повеќе пати, но не со исто множество на влезни параметри, туку, влезните параметри се строго подредени спрема некој критериум, на пример, за сортирање на низи во место, влезниот параметер е низа со се поголема должина.
 
-### Имплементација на дефинициите
+### Имплементација на дефинициите и нивно извршување и споредување
 Специфичната имплементација на опишаните дефиниции е изработена преку интерфејси во TypeScript.  
 Дефиницијата на проблем (**`ProblemOptions`**) се состои од:
 - името на проблемот
 - имиња на метриките кои треба да се достават од алгоритмите кој ќе го решаваат овој проблем
 - низа од прогресивно покомплексни вредности кои ќе бидат искористени како влезни параметри за алгоритмите. Можни се две опции, имено, да се зададат експлицитно специфични вредности, или да се зададе функција (`type InputFunction<T> = (index: number) => T;`) на која ќе и биде зададен редниот број на извршувањето, а која ќе ни ги врати потребните влезни параметри.
-- број на тестови кои треба да се извршат (опционален параметар доколку се зададат вредностите експлицитно)
+- број на тестови кои треба да се извршат (опционален параметар доколку се зададат вредностите експлицитно). Доколку параметарот не е наведен, вредност која се подразбира е 100.
 
 ```typescript
 export interface ProblemOptions {
@@ -30,7 +30,7 @@ export interface ProblemOptions {
 }
 ```
 
-Самите алгоритми се дефинирани со помош на следниот интерфејс:
+Самите алгоритми (**`Algorithm`**)се дефинирани со помош на следниот интерфејс:
 ```typescript
 export interface Algorithm {
     name: string;
@@ -44,15 +44,41 @@ export type MetricMap = { [key: string]: Metric };
 export type Metric = () => number;
 ```
 каде што 
-- name е името на самиот алгоритам, и може да биде произволна вредност
+- name е името на самиот алгоритам, и може да биде произволна вредност, се додека не е иста со име на друг алгоритам за истиот проблем
 - problemName е името на проблемот кој овој алгоритам го решава, и мора да биде исто со името искористено за дефинирање на проблемот.
 - metrics е мапа од функции кои може да се искористат за превземање на метриките после извршување на алгоритмот за некоја зададена влезна вредност
-- run е функција која ќе биде искористена при извршувањето на алгоритмот
+- run е функција која ќе биде искористена при извршувањето на алгоритмот, и која од наша перспектива го енкапсулура самиот алгоритам.
 - reset е функција која ќе биде повиката откога ќе биде извршен алгоритмот и превземени метриките, со цел да може алгоритмот да се реиницијализира на почетна состојба, и да се осигураме дека метриките нема да може да се мешаат помеѓу различни извршувања на алгоритмот.
 
+Дефинициите на проблемите и алгоритмите се спојуваат заедно во класата **`AlgorithmComparer`** чиј конструктор ја прима дефиницијата на проблемот како параметар.
 
+```typescript
+export class AlgorithmComparer {
+    ...
+    constructor(private options: ProblemOptions) {
+        ...
+```
+Потоа, со помош на функцијата `registerAlgorithm` е можно да се регистрираат алгоритми кои го решаваат тој проблем. При регистрацијата се проверува
+- дали алгоритамот го решава точниот проблем
+- дали алгоритамот ги експонира своите метрики
+- дали метриките кои алгоритамот ги експонира комплетно одговараат со метриките побарани од проблемот
+- дали името на алгоритмот е единствено за тој проблем
+
+Доколку овие проверки се успешни, алгоритамот се регистрира.
+
+По успешната регистрација на сите алгоритми, може да се пристапи ........
 
 ## Комплексност на алгоритми и начини за проценка на комплексноста
+Наједноставна дефиниција на комплексност од аспект на алгоритми, би била едноставна релација помеѓу големината на влезните параметри на еден алгоритам, и потребните ресурси за да се изврши алгоритамот, т.е. потребниот број на чекори (време) или потребниот број на мемориски локации за да се изврши.
+Во оваа релација, најчесто единствениот фокус е на големината на самиот влез, при што секакви адитивни, па дури и мултипликативни константи се занемаруваат. Причината за тоа е што чест случај во извршувањето на алгоритмите е големината на нивните влезови да варира со неколку редови на величина. На пример, можно е еден алгоритам да зависи линеарно од влезот, и да има потреба од 100.000 чекори за секоја единица влез, т.е. за влез 1 извршува 100.000 чекор, за влез 2 извршува 200.000, итн.
+Да го споредеме овој алгоритам со друг, кој за секоја единица влез, извршува 
+
+
+In computer science, the analysis of algorithms is the determination of the computational complexity of algorithms, that is the amount of time, storage and/or other resources necessary to execute them. Usually, this involves determining a function that relates the length of an algorithm's input to the number of steps it takes (its time complexity) or the number of storage locations it uses (its space complexity). An algorithm is said to be efficient when this function's values are small. Since different inputs of the same length may cause the algorithm to have different behavior, the function describing its performance is usually an upper bound on the actual performance, determined from the worst case inputs to the algorithm.
+
+The term "analysis of algorithms" was coined by Donald Knuth.[1] Algorithm analysis is an important part of a broader computational complexity theory, which provides theoretical estimates for the resources needed by any algorithm which solves a given computational problem. These estimates provide an insight into reasonable directions of search for efficient algorithms.
+
+In theoretical analysis of algorithms it is common to estimate their complexity in the asymptotic sense, i.e., to estimate the complexity function for arbitrarily large input. Big O notation, Big-omega notation and Big-theta notation are used to this end. For instance, binary search is said to run in a number of steps proportional to the logarithm of the length of the sorted list being searched, or in O(log(n)), colloquially "in logarithmic time". Usually asymptotic estimates are used because different implementations of the same algorithm may differ in efficiency. However the efficiencies of any two "reasonable" implementations of a given algorithm are related by a constant multiplicative factor called a hidden constant.
 
 ## Практични примери
 
