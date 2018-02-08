@@ -1,16 +1,9 @@
-export enum Complexity {
-    Constant = "constant",
-    Linear = "linear",
-    Square = "square",
-    Logarithmic = "logarithmic",
-    Exponential = "exponential",
-    LinearLog = "linear-log",
-    Unknown = "unknown"
-}
+import { IAnalyzer, Complexity } from "./models";
 
-export class Analyzer {
 
-    analyzeMetrics(metrics: number[]) {
+export class Analyzer implements IAnalyzer {
+
+    analyzeMetrics(metrics: number[]): Complexity {
         if (this.checkConstant(metrics))
             return Complexity.Constant;
         if (this.checkLinear(metrics))

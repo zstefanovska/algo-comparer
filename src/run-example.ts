@@ -1,6 +1,6 @@
 import { BruteForceFibbonaci } from "./fibbonaci/fib-brute";
 import { DynamicFibbonaci } from "./fibbonaci/fib-dynamic";
-import { ProblemOptions, AlgorithmComparer } from "./comparer";
+import { ProblemOptions, AlgorithmComparer, Analyzer } from "./comparer";
 
 function run() {
     const options: ProblemOptions = {
@@ -10,7 +10,7 @@ function run() {
         inputLength: 40
     };
 
-    const comparer = new AlgorithmComparer(options);
+    const comparer = new AlgorithmComparer(options, new Analyzer());
     comparer.registerAlgorithm(new BruteForceFibbonaci());
     comparer.registerAlgorithm(new DynamicFibbonaci());
 

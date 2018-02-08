@@ -41,3 +41,17 @@ export interface AlgorithmResult {
 }
 
 export type AlgorithmResults = { [key: string]: AlgorithmResult };
+
+export enum Complexity {
+    Constant = "constant",
+    Linear = "linear",
+    Square = "square",
+    Logarithmic = "logarithmic",
+    Exponential = "exponential",
+    LinearLog = "linear-log",
+    Unknown = "unknown"
+}
+
+export interface IAnalyzer {
+    analyzeMetrics(metrics: number[]): Complexity;
+}

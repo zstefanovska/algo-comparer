@@ -1,6 +1,5 @@
-import { ProblemOptions, Algorithm, InputFunction, AlgorithmResults, MetricValuesMap } from "./models";
+import { ProblemOptions, Algorithm, InputFunction, AlgorithmResults, MetricValuesMap, IAnalyzer } from "./models";
 import * as Performance from "performance-node";
-import { Analyzer } from "./analyzer";
 
 export class AlgorithmComparer {
 
@@ -11,7 +10,7 @@ export class AlgorithmComparer {
 
     public results: AlgorithmResults = {};
 
-    constructor(private options: ProblemOptions) {
+    constructor(private options: ProblemOptions, private analyzer: IAnalyzer) {
         this.problemName = options.name;
         this.metrics = options.metricNames.slice();
         this.inputs = options.inputs;
@@ -71,8 +70,6 @@ export class AlgorithmComparer {
         for (let index = 0; index < inputLength; index++) {
             const input = this.getInput(index);
             this.algorithms.forEach(algorithm => {
-                algorithm.run(input);
-                algorithm.reset();
                 const startTime = performance.now();
                 algorithm.run(input);
                 const endTime = performance.now();
@@ -96,7 +93,6 @@ export class AlgorithmComparer {
     }
 
     displayAnalysis(): any {
-        const analyzer = new Analyzer();
         Object.keys(this.results).forEach(algorithm => {
             console.log(`Algoritm Name: ${algorithm}`);
             const result = this.results[algorithm];
@@ -107,7 +103,7 @@ export class AlgorithmComparer {
             }));
 
             metricValues.forEach(metric => {
-                const complexity = analyzer.analyzeMetrics(metric.values);
+                const complexity = this.analyzer.analyzeMetrics(metric.values);
                 console.log(`  Metric: ${metric.name}, Estimated complexity: ${complexity}`);
             });
         });
