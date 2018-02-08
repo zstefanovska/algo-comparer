@@ -1,10 +1,11 @@
 {
   "name": "algo-comparer",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Algorithm Complexity Comparer for Advanced Algorithms",
   "main": "dist/index.js",
   "scripts": {
-    "example": "tsc & node ./dist/run-example.js"
+    "example": "tsc & node ./dist/run-example.js",
+    "test": "tsc & node ./dist/run-tests.js"
   },
   "repository": {
     "type": "git",

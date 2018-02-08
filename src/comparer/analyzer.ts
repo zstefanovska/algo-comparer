@@ -10,9 +10,17 @@ export class Analyzer implements IAnalyzer {
             return Complexity.Linear;
         if (this.checkSquare(metrics))
             return Complexity.Square;
+        if (this.checkLogarithmic(metrics)) {
+            return Complexity.Logarithmic;
+        }
         if (this.checkExponential(metrics))
             return Complexity.Exponential;
+
         return Complexity.Unknown;
+    }
+
+    checkLogarithmic(metrics: number[]): boolean {
+        return this.checkLinear(metrics.map(value => Math.exp(value)));
     }
 
     checkExponential(metrics: number[]): boolean {
@@ -28,22 +36,21 @@ export class Analyzer implements IAnalyzer {
     }
 
     checkLinear(metrics: number[]): boolean {
-        let deltas = metrics.map((item, index) => {
-            if (index === 0)
-                return undefined;
-            return item - metrics[index - 1];
-        }).filter(item => !!item).map(item => <number>item);
+        let deltas = this.getDeltas(metrics);
         return this.checkConstant(deltas);
     }
 
     checkSquare(metrics: number[]): boolean {
-        let deltas = metrics.map((item, index) => {
+        let deltas = this.getDeltas(metrics);
+        return this.checkLinear(deltas);
+    }
+
+    getDeltas(source: number[]) {
+        return source.map((item, index) => {
             if (index === 0)
                 return undefined;
-            return item - metrics[index - 1];
+            return item - source[index - 1];
         }).filter(item => !!item).map(item => <number>item);
-
-        return this.checkLinear(deltas);
     }
 
     private getRange(input: number[]): number {
