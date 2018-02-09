@@ -46,6 +46,7 @@ export enum Complexity {
     Constant = "constant",
     Linear = "linear",
     Square = "square",
+    Cube = "cube",
     Logarithmic = "logarithmic",
     Exponential = "exponential",
     LinearLog = "linear-log",

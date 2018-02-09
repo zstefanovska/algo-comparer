@@ -5,7 +5,7 @@ function run() {
         name: "demo",
         metricNames: ["demoMetric"],
         inputs: (index) => index,
-        inputLength: 40
+        inputLength: 20
     };
 
     const comparer = new AlgorithmComparer(options, new Analyzer());
@@ -108,7 +108,7 @@ function run() {
                 demoMetric: () => demoMetric
             },
             run: (index: number) => {
-                const value = index + 10;
+                const value = index;
                 demoMetric = value * Math.log(value);
                 return index;
             },

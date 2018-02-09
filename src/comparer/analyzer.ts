@@ -10,11 +10,15 @@ export class Analyzer implements IAnalyzer {
             return Complexity.Linear;
         if (this.checkSquare(metrics))
             return Complexity.Square;
+        if (this.checkCube(metrics))
+            return Complexity.Cube;
         if (this.checkLogarithmic(metrics)) {
             return Complexity.Logarithmic;
         }
         if (this.checkExponential(metrics))
             return Complexity.Exponential;
+        if (this.checkLinLog(metrics))
+            return Complexity.LinearLog;
 
         return Complexity.Unknown;
     }
@@ -27,12 +31,37 @@ export class Analyzer implements IAnalyzer {
         return this.checkLinear(metrics.map(value => Math.log(value)));
     }
 
+    checkLinLog(metrics: number[]) {
+        metrics = metrics
+            .map((value, index) => value / index)
+            .map(value => Math.exp(value));
+        return this.checkLinear(metrics);
+    }
+
+    forwardRunningAverage(source: number[]) {
+        let value = 0;
+        return source.map((item, index) => {
+            if (index === 0) {
+                value = item;
+                return item;
+            }
+            value = (value * index + item) / (index + 1);
+            return value;
+        });
+    }
+
+    backwardRunningAverage(source: number[]) {
+        return this.forwardRunningAverage(source.reverse()).reverse();
+    }
+
     checkConstant(metrics: number[]): boolean {
+        // const bra = this.backwardRunningAverage(metrics);
+        // const fra = this.forwardRunningAverage(metrics);
+        // const averages = fra.map((value, index) => (value + bra[index]) / 2);
         const values = this.cutExtremes(metrics, 10);
         const range = this.getRange(values);
         const min = Math.min(...values);
-        // allow 50% of leaway
-        return range < min * 0.5;
+        return range < min * 0.08;
     }
 
     checkLinear(metrics: number[]): boolean {
@@ -44,6 +73,12 @@ export class Analyzer implements IAnalyzer {
         let deltas = this.getDeltas(metrics);
         return this.checkLinear(deltas);
     }
+
+    checkCube(metrics: number[]): boolean {
+        let deltas = this.getDeltas(metrics);
+        return this.checkSquare(deltas);
+    }
+
 
     getDeltas(source: number[]) {
         return source.map((item, index) => {
